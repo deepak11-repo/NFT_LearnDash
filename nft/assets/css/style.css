@@ -1,0 +1,29 @@
+.response-container {
+    margin-top: 10px;
+}
+
+.response-item {
+    margin-bottom: 5px; 
+}
+
+.response-label {
+    font-weight: bold;
+}
+
+.response-value {
+    margin-left: 5px;
+}
+
+.confirmation-message, .details-message {
+    margin-bottom: 10px;
+    padding-bottom: 25px;
+}
+
+.confirmation-message {
+    font-weight: bold;
+}
+
+.error-message {
+    font-weight: bold;
+    color: red;
+}
