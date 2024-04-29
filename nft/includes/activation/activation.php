@@ -45,7 +45,5 @@ function create_custom_table() {
     error_log('Table Created');
 }
 
-
-
 require_once plugin_dir_path( __FILE__ ) . '../admin/admin-functions.php';
 require_once plugin_dir_path( __FILE__ ) . '../public/public-functions.php';
