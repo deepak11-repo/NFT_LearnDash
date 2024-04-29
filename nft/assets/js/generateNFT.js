@@ -41,8 +41,23 @@ jQuery(document).ready(function($) {
                     backgroundColor: "linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,121,16,1) 26%, rgba(0,212,255,1) 86%)",
                     stopOnFocus: true 
                 }).showToast();
+                
                 clickedButton.prop('disabled', true);
-             
+                var id = clickedButton.data('id');                
+                $.ajax({
+                    url: ajax_object_update_nft.ajax_url,
+                    type: 'POST',
+                    data: {
+                        action: 'update_nft_generated',
+                        id: id
+                    },
+                    success: function(response) {
+                        console.log("nftGenerated updated successfully");
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error updating nftGenerated:", error);
+                    }
+                });
             },
             error: function(xhr, status, error) {
                 console.error("Error:", error);

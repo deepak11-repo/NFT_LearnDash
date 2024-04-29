@@ -5,11 +5,13 @@ class My_Admin_Functions {
         add_action('admin_enqueue_scripts', array($this, 'enqueue_custom_scripts'));
         add_action('admin_menu', array($this, 'add_manage_nft_menu'));
         add_action('wp_ajax_issue_certificate_ajax', array($this,'issue_certificate_ajax'));
+        add_action('wp_ajax_update_nft_generated', array($this,'update_nft_generated_callback'));
     }
 
     public function enqueue_custom_scripts() {
         wp_enqueue_script('manage-nft-script', plugin_dir_url(__FILE__) . '../../assets/js/generateNFT.js', array('jquery'), '1.0', true);    
         wp_localize_script('manage-nft-script', 'ajax_object', array('ajax_url' => admin_url('admin-ajax.php')));
+        wp_localize_script('manage-nft-script', 'ajax_object_update_nft', array('ajax_url' => admin_url('admin-ajax.php')));
         wp_enqueue_style('admin-style', plugin_dir_url(__FILE__) . '../../assets/css/admin-style.css');
         wp_enqueue_style('toastify-css', 'https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css');       
         wp_enqueue_script('toastify-js', 'https://cdn.jsdelivr.net/npm/toastify-js', array(), null, true); 
@@ -44,13 +46,20 @@ class My_Admin_Functions {
             echo '<td>' . $row->user_email . '</td>';
             echo '<td>' . $row->course_enrollment . '</td>';
             echo '<td>' . $row->course_completion_date . '</td>';
-            echo '<td><button class="verify-button" data-id="' . $row->id . '">Generate NFT</button></td>';
+            // Check the value of nft_generated field to determine button status
+            $button_text = $row->nft_generated ? 'NFT Generated' : 'Generate NFT';
+            $button_disabled = $row->nft_generated ? 'disabled' : '';
+            echo '<td><button class="verify-button" data-id="' . $row->id . '" ' . $button_disabled . '>' . $button_text . '</button></td>';
+            echo '</tr>';
+
+
             echo '</tr>';
         }    
         echo '</tbody>';
         echo '</table>';
         echo '</div>';
     }
+
     
     public function issue_certificate_ajax() {
     // Verify nonce if needed
@@ -104,6 +113,26 @@ class My_Admin_Functions {
             error_log( "HTTP Response Code: $response_code" );
             error_log( "Response from server: $response_body" );
         }
+    }
+
+    public function update_nft_generated_callback() {
+    global $wpdb;
+    $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+    if ($id > 0) {
+        $table_name = $wpdb->prefix . 'course_completion_data';
+        $wpdb->update(
+            $table_name,
+            array('nft_generated' => 1),
+            array('id' => $id),
+            array('%d'),
+            array('%d')
+        );
+        wp_send_json_success('nft_generated field updated successfully');
+    } else {
+        wp_send_json_error('Invalid ID');
+    }
+    
+    wp_die();
     }
     
 }

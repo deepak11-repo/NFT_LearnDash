@@ -19,7 +19,7 @@ function my_custom_plugin_activation_error_notice() {
 }
 
 function activate_custom_plugin() {   
-    create_custom_table(); 
+    create_custom_table();    
 }
 
 function create_custom_table() {
@@ -36,6 +36,7 @@ function create_custom_table() {
         user_email varchar(255) NOT NULL,
         course_enrollment date NOT NULL,
         course_completion_date date NOT NULL,
+        nft_generated tinyint(1) NOT NULL DEFAULT 0,
         PRIMARY KEY  (id)
     ) $charset_collate;";
 
@@ -43,6 +44,7 @@ function create_custom_table() {
     dbDelta( $sql );
     error_log('Table Created');
 }
+
 
 
 require_once plugin_dir_path( __FILE__ ) . '../admin/admin-functions.php';
