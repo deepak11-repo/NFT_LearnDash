@@ -33,38 +33,48 @@ class My_Admin_Functions {
         global $wpdb;
         $table_name = $wpdb->prefix . 'course_completion_data';
         $results = $wpdb->get_results("SELECT * FROM $table_name");       
-        echo '<div class="wrap">';
-        echo '<h2>Manage NFT</h2>';
-        echo '<table class="wp-list-table widefat fixed striped">';
-        echo '<thead><tr><th>ID</th><th>Post Title</th><th>Display Name</th><th>User Email</th><th>Course Enrollment</th><th>Completion Date</th><th>Generate NFT</th></tr></thead>';
-        echo '<tbody>';    
+        ?>
+        <div class="wrap">
+            <h2>Manage NFT</h2>
+            <table class="wp-list-table widefat fixed striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Post Title</th>
+                        <th>Display Name</th>
+                        <th>User Email</th>
+                        <th>Course Enrollment</th>
+                        <th>Completion Date</th>
+                        <th>Generate NFT</th>
+                    </tr>
+                </thead>
+                <tbody>
+        <?php    
         foreach ($results as $row) {
-            echo '<tr>';
-            echo '<td>' . $row->id . '</td>';
-            echo '<td>' . $row->post_title . '</td>';
-            echo '<td>' . $row->display_name . '</td>';
-            echo '<td>' . $row->user_email . '</td>';
-            echo '<td>' . $row->course_enrollment . '</td>';
-            echo '<td>' . $row->course_completion_date . '</td>';
-            // Check the value of nft_generated field to determine button status
-            $button_text = $row->nft_generated ? 'NFT Generated' : 'Generate NFT';
-            $button_disabled = $row->nft_generated ? 'disabled' : '';
-            echo '<td><button class="verify-button" data-id="' . $row->id . '" ' . $button_disabled . '>' . $button_text . '</button></td>';
-            echo '</tr>';
-
-
-            echo '</tr>';
+            ?>
+            <tr>
+                <td><?php echo $row->id; ?></td>
+                <td><?php echo $row->post_title; ?></td>
+                <td><?php echo $row->display_name; ?></td>
+                <td><?php echo $row->user_email; ?></td>
+                <td><?php echo $row->course_enrollment; ?></td>
+                <td><?php echo $row->course_completion_date; ?></td>
+                <?php
+                $button_text = $row->nft_generated ? 'NFT Generated' : 'Generate NFT';
+                $button_disabled = $row->nft_generated ? 'disabled' : '';
+                ?>
+                <td><button class="verify-button" data-id="<?php echo $row->id; ?>" <?php echo $button_disabled; ?>><?php echo $button_text; ?></button></td>
+            </tr>
+            <?php
         }    
-        echo '</tbody>';
-        echo '</table>';
-        echo '</div>';
+        ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
     }
-
-    
+        
     public function issue_certificate_ajax() {
-    // Verify nonce if needed
-    // Check user permissions if needed
-    // Get the data passed from JavaScript
     $data = $_POST['data'];
     $student_mail = isset($_POST['studentMail']) ? $_POST['studentMail'] : '';
     error_log('Data received in issue_certificate_ajax: ' . print_r($data, true));
@@ -116,23 +126,22 @@ class My_Admin_Functions {
     }
 
     public function update_nft_generated_callback() {
-    global $wpdb;
-    $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
-    if ($id > 0) {
-        $table_name = $wpdb->prefix . 'course_completion_data';
-        $wpdb->update(
-            $table_name,
-            array('nft_generated' => 1),
-            array('id' => $id),
-            array('%d'),
-            array('%d')
-        );
-        wp_send_json_success('nft_generated field updated successfully');
-    } else {
-        wp_send_json_error('Invalid ID');
-    }
-    
-    wp_die();
+        global $wpdb;
+        $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+        if ($id > 0) {
+            $table_name = $wpdb->prefix . 'course_completion_data';
+            $wpdb->update(
+                $table_name,
+                array('nft_generated' => 1),
+                array('id' => $id),
+                array('%d'),
+                array('%d')
+            );
+            wp_send_json_success('nft_generated field updated successfully');
+        } else {
+            wp_send_json_error('Invalid ID');
+        }        
+        wp_die();
     }
     
 }

@@ -43,20 +43,18 @@ class Public_Functions {
     }
 
     public function nft_verification_shortcode() {
-        ob_start(); ?>    
+        ?>
         <form id="nftVerificationForm">
             <label for="nftCode">Enter your NFT Code:</label>
             <input type="text" id="nftCode" name="nftCode">
             <button type="submit">Verify</button>
-        </form>    
-        <div id="verificationResponse"></div>    
+        </form>
+        <div id="verificationResponse"></div>
         <?php
-        return ob_get_clean();
     }
 
     public function fetch_nft_data_callback() {
         $nonce = $_POST['nonce'];
-        error_log( 'Nonce received: ' . $nonce ); // Log the nonce value
         if ( ! wp_verify_nonce( $nonce, 'nft_verification_nonce' ) ) {
             wp_send_json_error( 'Invalid nonce' );
         }    
